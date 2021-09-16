@@ -7,7 +7,7 @@
 
 
 require 'sinatra'
-require 'sinatra/reloader' if !development?
+require 'sinatra/reloader' if development?
 require_relative 'lib/helpers.rb'
 require_relative 'models/list.rb' 
 require_relative 'models/user.rb' 
@@ -15,8 +15,8 @@ require 'bcrypt'
 require 'securerandom'  
 
 
-also_reload 'models/list.rb' if !development?
-also_reload 'models/user.rb' if !development?
+also_reload 'models/list.rb' if development?
+also_reload 'models/user.rb' if development?
 
 enable :sessions
 
