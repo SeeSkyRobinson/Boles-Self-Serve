@@ -1,0 +1,9 @@
+
+<% user_receipts.each do |receipt| %>
+    <% time = Time.parse(receipt['min']).strftime("%d/%m/%Y %H:%M") %>
+    <a href="my_receipt">Date: <%= time %> Total $<%= receipt['sum'] %>
+    </a>
+    <p>
+    </p>
+<% end %>
+

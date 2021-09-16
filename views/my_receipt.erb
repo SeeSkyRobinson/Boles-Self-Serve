@@ -1,0 +1,44 @@
+<%# 
+i want this to handle two use cases. 1 is after the user has hit pay now. in which case the receipt is showing the data that matches the session id. 2. a logged in user has looked at a list of their receipts and has selected one to look at. this will take the receipts session id param or something passed in off the hyperlink. so both cases the argument is the session id. %>
+
+
+<%# format should look like this
+boles
+time
+items
+total
+thanks for shopping with boles %>
+
+
+
+<h2>
+    Boles
+</h2>
+
+<p>
+    <% time = Time.parse(current_items[0]['creation_time']).strftime("%d/%m/%Y %H:%M") %> 
+    <%= time %>
+</p>
+
+<%# the current items on receipt %>
+<% running_total = 0 %>
+
+<ul>
+    <% current_items.each do |item| %>
+        <% cost = item['quantity'].to_i * item['unit_cost'].to_i %>
+        <% running_total += cost %>
+        <li>
+            <%= item['product_name']%>. x <%= item['quantity']%> <%= item['unit_type'] %> $<%= cost %>.00
+        </li>
+    <% end %>
+</ul>
+
+<%# running total %>
+
+<h3>
+    Total: $<%= running_total %>.00
+</h3>
+
+<h4>
+    Thanks for shopping with Boles
+</h4>
