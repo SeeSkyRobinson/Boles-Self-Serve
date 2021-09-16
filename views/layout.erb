@@ -9,7 +9,18 @@
 <body>
   <% if logged_in? %>
     logged in as <%= find_user_by_id(session[:user_id])["email"] %>
-  <% end %> 
+    <a href="/log_out">Log out</a>
+  <% else %> 
+  <a href="/log_in">Log in</a>
+  <a href="/sign_up">Sign up</a>
+  <% end %>
+
+
+
+  <%# home button %>
+
+<a href="/clear">home</a>
+
 
   <%= yield %>
 

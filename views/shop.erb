@@ -1,3 +1,4 @@
+
 <%# the current items on receipt %>
 <% running_total = 0 %>
 
@@ -20,7 +21,7 @@
 
 <%# pay now button and plan %>
 <%# form when click get pay now - pay now to get receipt - get receipt looks at the receipts database finds the data that matches the session id and displays it %>
-<form method="post" action="/pay_now">
+<form method="post" action="/my_receipt/<%= session_id %>">
     <button>Pay Now</button>
 </form>
 
@@ -38,7 +39,7 @@
         </h4>
         <form method="post" action="/update_receipt_db">
             <label for="quantity">Select a quantity:</label>
-            <input type="number" name="quantity" autocomplete="off">
+            <input type="number" name="quantity" min='0' autocomplete="off">
             <%= item_hash['unit_type'] %>
             <input type="hidden" name="product_id" value="<%= item_hash['product_id'] %>">        
             <input type="submit">

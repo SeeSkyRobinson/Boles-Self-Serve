@@ -45,7 +45,7 @@ def check_for_receipt(session_id, product_id)
 end 
 
 def change_quantity_on_existing_receipt(session_id, product_id, quantity, existing_receipt_hash)
-    new_quantity = existing_receipt["quantity"].to_i + quantity.to_i
+    new_quantity = existing_receipt_hash["quantity"] + quantity
     sql = "UPDATE receipts SET quantity = '#{new_quantity}' WHERE session_id = '#{session_id}' AND product_id = '#{product_id}';"
     run_sql(sql)
 end    
@@ -58,7 +58,7 @@ end
 
 
 def insert_new_receipt(session_id, product_id, quantity)
-    user_id = session[:user_id]
+    user_id = session[:user_id].to_i
     # grab all the values needed from groceries based on the product id
     item_data = retrieve_item_data(product_id)
     time = Time.now
@@ -74,7 +74,7 @@ def insert_new_receipt(session_id, product_id, quantity)
             creation_time
         ) VALUES (
             '#{session_id}', 
-            '#{user_id}',
+            #{user_id},
             '#{product_id}',
             '#{item_data['product_name']}',
             '#{item_data['unit_cost']}',
@@ -88,9 +88,9 @@ end
 
 
 def find_user_receipts(user_id)
-
+    p user_id
     # add in user stuff so its where its the actual user
-    sql = "SELECT session_id, min(creation_time), sum(unit_cost * quantity) FROM receipts GROUP BY session_id;"
+    sql = "SELECT session_id, user_id, min(creation_time), sum(unit_cost * quantity) FROM receipts WHERE user_id = #{user_id} GROUP BY session_id, user_id ;"
     run_sql(sql)
 end
 
