@@ -61,7 +61,7 @@ def insert_new_receipt(session_id, product_id, quantity)
     user_id = session[:user_id]
     # grab all the values needed from groceries based on the product id
     item_data = retrieve_item_data(product_id)
-    time = Time.now.strftime("%d/%m/%Y %H:%M")
+    time = Time.now
     sql = <<~HEREDOC
         INSERT INTO receipts (
             session_id, 
