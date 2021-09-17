@@ -7,19 +7,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-  <% if logged_in? %>
-    logged in as <%= find_user_by_id(session[:user_id])["email"] %>
-    <a href="/log_out">Log out</a>
-  <% else %> 
-  <a href="/log_in">Log in</a>
-  <a href="/sign_up">Sign up</a>
-  <% end %>
-
-
-
-  <%# home button %>
-
-<a href="/clear">home</a>
+  <section class="top_bar">
+    <h1>boles</h1>
+    <% if logged_in? %>
+      <section class="logged_in_message">
+        logged in as <%= find_user_by_id(session[:user_id])["email"] %>
+      </section>
+      <section class="view_my_receipts">
+        <a href="/view_my_receipts">View my receipts</a>
+      </section>
+      <section class="logout">
+        <a href="/log_out">Log out</a>
+      </section>
+    <% else %>
+      <section class="login_signup">
+        <a href="/log_in">Log in</a>
+        <a href="/sign_up">Sign up</a>
+      </section> 
+    <% end %>  
+  </section>
 
 
   <%= yield %>

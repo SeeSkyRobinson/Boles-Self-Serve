@@ -8,7 +8,7 @@ CREATE TABLE users (
 
 CREATE TABLE receipts (
     id SERIAL PRIMARY KEY,
-    session_id TEXT,
+    shopping_id TEXT,
     user_id INTEGER,
     product_id INTEGER,
     product_name TEXT,

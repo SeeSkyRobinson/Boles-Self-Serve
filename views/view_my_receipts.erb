@@ -1,9 +1,13 @@
+<% if user_receipts.to_a.length == 0 %>
+    <p>No receipts. Start shopping!</p>
+<% end %>
 
 <% user_receipts.each do |receipt| %>
     <% time = Time.parse(receipt['min']).strftime("%d/%m/%Y %H:%M") %>
-    <a href="my_receipt/<%= receipt['session_id'] %>">Date: <%= time %> Total $<%= receipt['sum'] %>
+    <a href="my_receipt/<%= receipt['shopping_id'] %>">Date: <%= time %> Total $<%= receipt['sum'] %>
     </a>
     <p>
     </p>
 <% end %>
 
+<a href="/clear">start shopping</a>

@@ -22,7 +22,7 @@ enable :sessions
 
 #home
 get '/' do
-  session[:session_id] = SecureRandom.uuid
+  session[:shopping_id] = SecureRandom.uuid
   redirect '/shop'
 end
 
@@ -38,13 +38,12 @@ post '/create_user' do
   password_digest = BCrypt::Password.create(password)
   user = create_user(email, password_digest)
   session[:user_id] = user['id']
-
-
-  redirect '/shop'
+  redirect '/'
 end  
 
 #log in and session stuff
 get '/log_in' do
+  session[:shopping_id] = nil
   erb :log_in
 end 
 
@@ -52,7 +51,7 @@ post '/session' do
   user = find_user_by_email(params[:email])
   if user && BCrypt::Password.new(user["password_digest"]) == params[:password]
     session[:user_id] = user['id']
-    redirect '/logged_in_options'
+    redirect '/shop'
   else
     erb :log_in
   end  
@@ -63,18 +62,18 @@ delete '/session' do
   redirect '/log_in'
 end
 
-get '/logged_in_options' do
-  erb :logged_in_options
-end
 
 get '/view_my_receipts' do
+  delete_receipt_with_this_shopping_id = params["delete"]
+  delete_receipt(delete_receipt_with_this_shopping_id)
   user_id = session[:user_id].to_i
   user_receipts = find_user_receipts(user_id)
   erb :view_my_receipts, locals: { user_receipts: user_receipts }
 end
 
 get '/log_out' do
-  session.clear
+  session[:user_id] = nil
+
   redirect '/'
 end  
 
@@ -82,37 +81,37 @@ end
 #shopping
 
 get '/shop' do
-  current_items = get_current_items(session[:session_id])
+  current_items = get_current_items(session[:shopping_id])
   groceries = get_all_items()
 
-  erb :shop, locals: { session_id: session[:session_id], current_items: current_items, groceries: groceries }
+  erb :shop, locals: { shopping_id: session[:shopping_id], current_items: current_items, groceries: groceries }
 end  
 
 post '/update_receipt_db' do
   product_id  = params[:product_id]
   quantity = params[:quantity]
   # update the receipt database with the quantity of the item selected with the session id
-  if check_for_receipt(session[:session_id], product_id)
-    existing_receipt = check_for_receipt(session[:session_id], product_id)
-    change_quantity_on_existing_receipt(session[:session_id], product_id, quantity, existing_receipt)
+  if check_for_receipt(session[:shopping_id], product_id)
+    existing_receipt = check_for_receipt(session[:shopping_id], product_id)
+    change_quantity_on_existing_receipt(session[:shopping_id], product_id, quantity, existing_receipt)
   else
-    insert_new_receipt(session[:session_id], product_id, quantity)
+    insert_new_receipt(session[:shopping_id], product_id, quantity)
   end
   redirect '/shop'
 end  
 
 
-post '/my_receipt/:session_id' do
-  # if coming from view all receipts change session id to match the id of the one clicked on off the list. else keep session id the session id
-
-  
-  current_items = get_current_items(params['session_id'])
+get '/my_receipt/:shopping_id' do
+  current_items = get_current_items(params[:shopping_id])
   erb :my_receipt, locals: { current_items: current_items }
+end 
+
+delete '/my_receipt/:shopping_id' do
+  delete_receipt(params["shopping_id"])
+  redirect '/view_my_receipts'
 end  
 
 get '/clear' do
-  session.clear
-  session[:session_id] = nil
   redirect '/'
 end
 

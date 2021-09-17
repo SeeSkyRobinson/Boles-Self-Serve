@@ -1,48 +1,47 @@
 
-<%# the current items on receipt %>
-<% running_total = 0 %>
-
-<ul>
-    <% current_items.each do |item| %>
-        <% cost = item['quantity'].to_i * item['unit_cost'].to_i %>
-        <% running_total += cost %>
-        <li>
-            <%= item['product_name']%>. x <%= item['quantity']%> <%= item['unit_type'] %> $<%= cost %>.00
-        </li>
-    <% end %>
-</ul>
-
-<%# running total %>
-
-<h3>
-    Total: $<%= running_total %>.00
-</h3>
-
-
-<%# pay now button and plan %>
-<%# form when click get pay now - pay now to get receipt - get receipt looks at the receipts database finds the data that matches the session id and displays it %>
-<form method="post" action="/my_receipt/<%= session_id %>">
-    <button>Pay Now</button>
-</form>
-
-
-<%# the forms of all the options to pick from %>
-
-<% groceries.each do |item_hash| %>
+<section class="main">
+    <%# the forms of all the options to pick from %>
     <section class="items">
-        <h3>
-            <%= item_hash['product_name'] %>
-        </h3>
-        <img src="<%= item_hash['image_url'] %>" alt="<%= item_hash['product_name'] %>">
-        <h4>
-            $<%= item_hash['unit_cost'] %>.00        
-        </h4>
-        <form method="post" action="/update_receipt_db">
-            <label for="quantity">Select a quantity:</label>
-            <input type="number" name="quantity" min='0' autocomplete="off">
-            <%= item_hash['unit_type'] %>
-            <input type="hidden" name="product_id" value="<%= item_hash['product_id'] %>">        
-            <input type="submit">
-        </form> 
+        <% groceries.each do |item_hash| %>
+            <section class="item">
+                <h3>
+                    <%= item_hash['product_name'] %>
+                </h3>
+                <img src="<%= item_hash['image_url'] %>" alt="<%= item_hash['product_name'] %>">
+                <h4>
+                    $<%= item_hash['unit_cost'] %>.00        
+                </h4>
+                <form method="post" action="/update_receipt_db">
+                    <label for="quantity">Select a quantity:</label>
+                    <input type="number" name="quantity" min='0' autocomplete="off">
+                    <%= item_hash['unit_type'] %>
+                    <input type="hidden" name="product_id" value="<%= item_hash['product_id'] %>">        
+                    <input type="submit">
+                </form> 
+            </section>
+        <% end %>
     </section>
-<% end %>
+    <section class="right_hand_screen">
+    <%# the current items on receipt %>
+        <% running_total = 0 %>
+        <ul>
+            <% current_items.each do |item| %>
+                <% cost = item['quantity'].to_i * item['unit_cost'].to_i %>
+                <% running_total += cost %>
+                <li>
+                    <%= item['product_name']%>. x <%= item['quantity']%> <%= item['unit_type'] %> $<%= cost %>.00
+                </li>
+            <% end %>
+        </ul>
+
+        <%# running total %>
+
+        <h3>
+            Total: $<%= running_total %>.00
+        </h3>
+
+        <form method="get" action="/my_receipt/<%= shopping_id %>">
+            <button>Pay Now</button>
+        </form>
+    </section>
+</section>

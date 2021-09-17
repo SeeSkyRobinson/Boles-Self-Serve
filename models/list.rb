@@ -24,8 +24,8 @@ def seed_groceries(product_name, image_url, unit_cost, unit_type, quantity, depa
     run_sql(sql)
 end
 
-def get_current_items(session_id)
-    sql = "SELECT * FROM receipts WHERE session_id = '#{session_id}';"
+def get_current_items(shopping_id)
+    sql = "SELECT * FROM receipts WHERE shopping_id = '#{shopping_id}';"
     return run_sql(sql)
 end
 
@@ -34,8 +34,8 @@ def get_all_items()
     return run_sql(sql)
 end    
 
-def check_for_receipt(session_id, product_id)
-    sql = "SELECT * from receipts WHERE product_id = '#{product_id}' AND session_id = '#{session_id}';"
+def check_for_receipt(shopping_id, product_id)
+    sql = "SELECT * from receipts WHERE product_id = '#{product_id}' AND shopping_id = '#{shopping_id}';"
     results = run_sql(sql).to_a
     if results.length == 0
         return false
@@ -44,9 +44,9 @@ def check_for_receipt(session_id, product_id)
     end
 end 
 
-def change_quantity_on_existing_receipt(session_id, product_id, quantity, existing_receipt_hash)
+def change_quantity_on_existing_receipt(shopping_id, product_id, quantity, existing_receipt_hash)
     new_quantity = existing_receipt_hash["quantity"] + quantity
-    sql = "UPDATE receipts SET quantity = '#{new_quantity}' WHERE session_id = '#{session_id}' AND product_id = '#{product_id}';"
+    sql = "UPDATE receipts SET quantity = '#{new_quantity}' WHERE shopping_id = '#{shopping_id}' AND product_id = '#{product_id}';"
     run_sql(sql)
 end    
 
@@ -57,14 +57,14 @@ def retrieve_item_data(product_id)
 end
 
 
-def insert_new_receipt(session_id, product_id, quantity)
+def insert_new_receipt(shopping_id, product_id, quantity)
     user_id = session[:user_id].to_i
     # grab all the values needed from groceries based on the product id
     item_data = retrieve_item_data(product_id)
     time = Time.now
     sql = <<~HEREDOC
         INSERT INTO receipts (
-            session_id, 
+            shopping_id, 
             user_id, 
             product_id, 
             product_name, 
@@ -73,7 +73,7 @@ def insert_new_receipt(session_id, product_id, quantity)
             quantity,
             creation_time
         ) VALUES (
-            '#{session_id}', 
+            '#{shopping_id}', 
             #{user_id},
             '#{product_id}',
             '#{item_data['product_name']}',
@@ -90,33 +90,14 @@ end
 def find_user_receipts(user_id)
     p user_id
     # add in user stuff so its where its the actual user
-    sql = "SELECT session_id, user_id, min(creation_time), sum(unit_cost * quantity) FROM receipts WHERE user_id = #{user_id} GROUP BY session_id, user_id ;"
+    sql = "SELECT shopping_id, user_id, min(creation_time), sum(unit_cost * quantity) FROM receipts WHERE user_id = #{user_id} GROUP BY shopping_id, user_id ;"
     run_sql(sql)
 end
 
+def delete_receipt(shopping_id)
+    sql = "DELETE FROM receipts WHERE shopping_id = '#{shopping_id}';"
+    run_sql(sql)
+end
 
-
-# def find_current_selections()
-#     sql = "SELECT * FROM list_in_progress;"
-#     return run_sql(sql)
-# end
-
-# def insert_new_record(table, option, quantity)
-#     db = PG.connect(dbname: 'project2')
-#     sql = "INSERT INTO #{table} (title, quantity) VALUES ('#{option}', '#{quantity}');"
-#     return run_sql(sql)
-# end
-
-# def update_quantity(title, update_quantity)
-#     old_quantity_tuple = PG.connect(dbname: 'project2').exec("SELECT quantity FROM list_in_progress WHERE title = '#{title}';")
-#     new_quantity = old_quantity_tuple[0]["quantity"].to_i + update_quantity.to_i
-#     sql = "UPDATE list_in_progress SET quantity = '#{new_quantity}' WHERE title = '#{title}';"
-#     run_sql(sql)
-# end    
-
-# def find_all_options() 
-#     sql = "SELECT title FROM all_options;"
-#     return run_sql(sql)
-# end
 
     

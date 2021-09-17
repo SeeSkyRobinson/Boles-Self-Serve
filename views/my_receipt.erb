@@ -48,3 +48,10 @@ thanks for shopping with boles %>
 <%# home button %>
 
 <a href="/clear">home</a>
+
+<% if logged_in? %>
+    <form method="post" action="/my_receipt/<%= current_items[0]['shopping_id'] %>">
+        <input type="hidden" name="_method" value="delete">
+        <button>hide this receipt from your wife</button>
+    </form>
+<% end %>

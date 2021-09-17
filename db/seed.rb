@@ -1,27 +1,5 @@
-# require 'faker'
+
 require_relative '../models/list.rb'
-
-# cost = rand(1..15)
-# quantity by default 
-
-# 75.times do
-#     table = 'all_options'
-#     quantity = 0 
-#     #dont delete '. Properly work around so ' shows in titles without breaking sql
-#     title = Faker::Book.title.delete("'") 
-#     insert_new_record(table, "#{title}", quantity)
-# end
-
-
-# CREATE TABLE groceries (
-#     product_id SERIAL PRIMARY KEY,
-#     product_name TEXT,
-#     image_url TEXT,
-#     unit_cost INTEGER,
-#     unit_type TEXT,
-#     quantity INTEGER,
-#     department TEXT
-# );
 
 
 
